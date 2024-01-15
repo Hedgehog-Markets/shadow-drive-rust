@@ -38,7 +38,7 @@ where
     ///
     /// # Example
     ///
-    /// ```
+    /// ```no_run
     /// # use byte_unit::Byte;
     /// # use shadow_drive_rust::{ShadowDriveClient, derived_addresses::storage_account};
     /// # use solana_client::rpc_client::RpcClient;
@@ -48,26 +48,26 @@ where
     /// # signer::{keypair::read_keypair_file, Signer},
     /// # };
     /// #
-    /// # let keypair = read_keypair_file(KEYPAIR_PATH).expect("failed to load keypair at path");
+    /// # async fn example() -> Result<(), shadow_drive_sdk::error::Error> {
+    /// # let keypair = Keypair::new();
     /// # let user_pubkey = keypair.pubkey();
-    /// # let rpc_client = RpcClient::new("https://ssc-dao.genesysgo.net");
-    /// # let shdw_drive_client = ShadowDriveClient::new(keypair, rpc_client);
+    /// # let shdw_drive_client = ShadowDriveClient::new(keypair, "https://ssc-dao.genesysgo.net");
     /// # let (storage_account_key, _) = storage_account(&user_pubkey, 0);
-    /// # let reduced_bytes = Byte::from_str("1MB").expect("invalid byte string");
+    /// # let reduced_bytes = "1MB".parse::<Byte>().expect("invalid byte string");
     /// #
     /// let reduce_storage_response = shdw_drive_client
     ///     .reduce_storage(&storage_account_key, reduced_bytes)
     ///     .await?;
+    /// #
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn reduce_storage(
         &self,
         storage_account_key: &Pubkey,
         size: Byte,
     ) -> ShadowDriveResult<StorageResponse> {
-        let size_as_bytes: u64 = size
-            .get_bytes()
-            .try_into()
-            .map_err(|_| Error::InvalidStorage)?;
+        let size_as_bytes: u64 = size.as_u64_checked().ok_or(Error::InvalidStorage)?;
 
         let selected_storage_acct = self.get_storage_account(storage_account_key).await?;
         let mut bucket_query = HashMap::new();
@@ -147,7 +147,7 @@ where
         };
         let args = shdw_drive_instructions::DecreaseStorage {
             remove_storage: size_as_bytes,
-            storage_used: storage_used,
+            storage_used,
         };
 
         let instruction = Instruction {
@@ -200,7 +200,7 @@ where
         };
         let args = shdw_drive_instructions::DecreaseStorage2 {
             remove_storage: size_as_bytes,
-            storage_used: storage_used,
+            storage_used,
         };
 
         let instruction = Instruction {

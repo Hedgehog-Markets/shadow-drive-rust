@@ -19,7 +19,7 @@ pub enum Error {
     AccountDeserializeError(IoError),
     InvalidStorage,
     SignerError(SignerError),
-    AnchorError(AnchorError),
+    AnchorError(Box<AnchorError>),
     ReqwestError(ReqwestError),
     AsyncJoinError(JoinError),
     FileValidationError(Vec<FileError>),
@@ -56,7 +56,7 @@ impl From<SignerError> for Error {
 
 impl From<AnchorError> for Error {
     fn from(anchor_error: AnchorError) -> Self {
-        Self::AnchorError(anchor_error)
+        Self::AnchorError(Box::new(anchor_error))
     }
 }
 

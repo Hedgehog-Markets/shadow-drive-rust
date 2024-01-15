@@ -73,8 +73,7 @@ where
         let mut account_seed: u32 = 0;
         match user_info_acct {
             Ok(user_info_acct) => {
-                let user_info = UserInfo::try_deserialize(&mut user_info_acct.data.as_slice())
-                    .map_err(Error::AnchorError)?;
+                let user_info = UserInfo::try_deserialize(&mut user_info_acct.data.as_slice())?;
                 account_seed = user_info.account_counter;
             }
             Err(ClientError {
@@ -90,10 +89,7 @@ where
             }
         }
 
-        let storage_requested: u64 = size
-            .get_bytes()
-            .try_into()
-            .map_err(|_| Error::InvalidStorage)?;
+        let storage_requested: u64 = size.as_u64_checked().ok_or(Error::InvalidStorage)?;
 
         let txn_encoded = match version {
             StorageAccountVersion::V1 { owner_2 } => {

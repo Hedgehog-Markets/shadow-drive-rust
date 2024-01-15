@@ -19,7 +19,7 @@ where
     ///
     /// # Example
     ///
-    /// ```
+    /// ```no_run
     /// # use shadow_drive_rust::{ShadowDriveClient, derived_addresses::storage_account};
     /// # use solana_client::rpc_client::RpcClient;
     /// # use solana_sdk::{
@@ -28,16 +28,18 @@ where
     /// # signer::{keypair::read_keypair_file, Signer},
     /// # };
     /// #
-    /// # let keypair = read_keypair_file(KEYPAIR_PATH).expect("failed to load keypair at path");
+    /// # async fn example() -> Result<(), shadow_drive_sdk::error::Error> {
+    /// # let keypair = Keypair::new();
     /// # let user_pubkey = keypair.pubkey();
-    /// # let rpc_client = RpcClient::new("https://ssc-dao.genesysgo.net");
-    /// # let shdw_drive_client = ShadowDriveClient::new(keypair, rpc_client);
+    /// # let shdw_drive_client = ShadowDriveClient::new(keypair, "https://ssc-dao.genesysgo.net");
     /// # let (storage_account_key, _) = storage_account(&user_pubkey, 0);
     /// #
     /// let storage_account = shdw_drive_client
     ///     .get_storage_account(&storage_account_key)
-    ///     .await
-    ///     .expect("failed to get storage account");
+    ///     .await?;
+    /// #
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn get_storage_account(&self, key: &Pubkey) -> ShadowDriveResult<StorageAcct> {
         let response = self

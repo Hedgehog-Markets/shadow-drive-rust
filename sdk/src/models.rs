@@ -58,7 +58,7 @@ pub struct ShadowFile {
     content_type: String,
 }
 
-const FALLBACK_MIMETYPE: &'static str = "application/octet-stream";
+const FALLBACK_MIMETYPE: &str = "application/octet-stream";
 
 impl ShadowFile {
     pub fn name(&self) -> &str {
@@ -112,7 +112,7 @@ impl ShadowFile {
             }
             Payload::Bytes(data) => {
                 let mut hasher = Sha256::new();
-                hasher.update(&data);
+                hasher.update(data);
                 hasher.finalize()
             }
         };

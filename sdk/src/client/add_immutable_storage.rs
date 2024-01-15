@@ -55,10 +55,7 @@ where
         storage_account_key: &Pubkey,
         size: Byte,
     ) -> ShadowDriveResult<StorageResponse> {
-        let size_as_bytes: u64 = size
-            .get_bytes()
-            .try_into()
-            .map_err(|_| Error::InvalidStorage)?;
+        let size_as_bytes: u64 = size.as_u64_checked().ok_or(Error::InvalidStorage)?;
 
         let selected_storage_acct = self.get_storage_account(storage_account_key).await?;
 

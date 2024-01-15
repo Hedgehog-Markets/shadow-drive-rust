@@ -39,7 +39,7 @@ where
     /// When specifying size, only KB, MB, and GB storage units are currently supported.
     /// # Example
     ///
-    /// ```
+    /// ```no_run
     /// # use byte_unit::Byte;
     /// # use shadow_drive_rust::{ShadowDriveClient, derived_addresses::storage_account};
     /// # use solana_client::rpc_client::RpcClient;
@@ -49,26 +49,26 @@ where
     /// # signer::{keypair::read_keypair_file, Signer},
     /// # };
     /// #
-    /// # let keypair = read_keypair_file(KEYPAIR_PATH).expect("failed to load keypair at path");
+    /// # async fn example() -> Result<(), shadow_drive_sdk::error::Error> {
+    /// # let keypair = Keypair::new();
     /// # let user_pubkey = keypair.pubkey();
-    /// # let rpc_client = RpcClient::new("https://ssc-dao.genesysgo.net");
-    /// # let shdw_drive_client = ShadowDriveClient::new(keypair, rpc_client);
+    /// # let shdw_drive_client = ShadowDriveClient::new(keypair, "https://ssc-dao.genesysgo.net");
     /// # let (storage_account_key, _) = storage_account(&user_pubkey, 0);
-    /// # let added_bytes = Byte::from_str("1MB").expect("invalid byte string");
+    /// # let added_bytes = "1MB".parse::<Byte>().expect("invalid byte string");
     /// #
     /// let add_storage_response = shdw_drive_client
     ///     .add_storage(&storage_account_key, added_bytes)
     ///     .await?;
+    /// #
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn add_storage(
         &self,
         storage_account_key: &Pubkey,
         size: Byte,
     ) -> ShadowDriveResult<StorageResponse> {
-        let size_as_bytes: u64 = size
-            .get_bytes()
-            .try_into()
-            .map_err(|_| Error::InvalidStorage)?;
+        let size_as_bytes: u64 = size.as_u64_checked().ok_or(Error::InvalidStorage)?;
 
         let wallet_pubkey = self.wallet.pubkey();
         let (user_info, _) = derived_addresses::user_info(&wallet_pubkey);

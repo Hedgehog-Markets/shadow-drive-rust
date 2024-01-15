@@ -129,9 +129,7 @@ where
             rent: rent::ID,
         };
 
-        let args = shdw_drive_instructions::MakeAccountImmutable {
-            storage_used: storage_used,
-        };
+        let args = shdw_drive_instructions::MakeAccountImmutable { storage_used };
 
         let instruction = Instruction {
             program_id: PROGRAM_ADDRESS,
@@ -176,9 +174,7 @@ where
             associated_token_program: spl_associated_token_account::ID,
             rent: rent::ID,
         };
-        let args = shdw_drive_instructions::MakeAccountImmutable2 {
-            storage_used: storage_used,
-        };
+        let args = shdw_drive_instructions::MakeAccountImmutable2 { storage_used };
 
         let instruction = Instruction {
             program_id: PROGRAM_ADDRESS,

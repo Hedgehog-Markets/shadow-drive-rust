@@ -20,7 +20,7 @@ where
     /// # Example
     ///
     /// ```
-    /// # use shadow_drive_rust::{ShadowDriveClient, derived_addresses::storage_account};
+    /// # use shadow_drive_sdk::{ShadowDriveClient, derived_addresses::storage_account};
     /// # use solana_client::rpc_client::RpcClient;
     /// # use solana_sdk::{
     /// # pubkey::Pubkey,
@@ -28,6 +28,7 @@ where
     /// # signer::{keypair::read_keypair_file, Signer},
     /// # };
     /// #
+    /// # async fn example() -> Result<(), shadow_drive_sdk::error::Error> {
     /// # let keypair = read_keypair_file(KEYPAIR_PATH).expect("failed to load keypair at path");
     /// # let user_pubkey = keypair.pubkey();
     /// # let rpc_client = RpcClient::new("https://ssc-dao.genesysgo.net");
@@ -37,6 +38,9 @@ where
     /// let files = shdw_drive_client
     ///     .list_objects(&storage_account_key)
     ///     .await?;
+    /// #
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn list_objects(
         &self,

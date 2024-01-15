@@ -1,3 +1,6 @@
+#![allow(unused_imports)]
+
+use base64::Engine;
 use serde::de::DeserializeOwned;
 use std::{collections::HashMap, time::Duration};
 
@@ -75,7 +78,7 @@ where
     /// ```
     /// use solana_sdk::signer::keypair::Keypair;    
     ///
-    /// let wallet = Keypair::generate();
+    /// let wallet = Keypair::new();
     /// let shdw_drive = ShadowDriveClient::new(wallet, "https://ssc-dao.genesysgo.net");
     /// ```
     pub fn new<U: ToString>(wallet: T, rpc_url: U) -> Self {
@@ -103,7 +106,7 @@ where
     /// use solana_sdk::signer::keypair::Keypair;    
     /// use solana_sdk::commitment_config::CommitmentConfig;
     ///
-    /// let wallet = Keypair::generate();
+    /// let wallet = Keypair::new();
     /// let solana_rpc = RpcClient::new_with_commitment("https://ssc-dao.genesysgo.net", CommitmentConfig::confirmed());
     /// let shdw_drive = ShadowDriveClient::new_with_rpc(wallet, solana_rpc);
     /// ```
@@ -198,5 +201,5 @@ where
 pub(crate) fn serialize_and_encode(txn: &Transaction) -> ShadowDriveResult<String> {
     let serialized = bincode::serialize(txn)
         .map_err(|error| Error::TransactionSerializationFailed(format!("{:?}", error)))?;
-    Ok(base64::encode(serialized))
+    Ok(base64::prelude::BASE64_STANDARD.encode(serialized))
 }

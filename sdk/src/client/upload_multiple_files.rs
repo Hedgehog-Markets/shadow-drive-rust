@@ -47,7 +47,7 @@ where
     ///     .upload_multiple_files(&storage_account_key, files)
     ///     .await
     ///     .expect("failed to upload files");
-    /// ````
+    /// ```
     pub async fn upload_multiple_files(
         &self,
         storage_account_key: &Pubkey,

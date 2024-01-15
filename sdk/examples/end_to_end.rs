@@ -3,15 +3,12 @@ use std::str::FromStr;
 use shadow_drive_sdk::{models::ShadowFile, Byte, Keypair, Pubkey, ShadowDriveClient};
 use solana_sdk::signature::read_keypair_file;
 
-const SOLANA_MAINNET_RPC: &'static str = "https://api.mainnet-beta.solana.com";
+const SOLANA_MAINNET_RPC: &str = "https://api.mainnet-beta.solana.com";
 
 #[tokio::main]
 async fn main() {
     // Get keypair
-    let keypair_file: String = std::env::args()
-        .skip(1)
-        .next()
-        .expect("no keypair file provided");
+    let keypair_file: String = std::env::args().nth(1).expect("no keypair file provided");
     let keypair: Keypair = read_keypair_file(keypair_file).expect("failed to read keypair file");
     println!("loaded keypair");
 
@@ -23,7 +20,7 @@ async fn main() {
     let response = client
         .create_storage_account(
             "test",
-            Byte::from_bytes(2_u128.pow(20)),
+            Byte::from_u64(2_u64.pow(20)),
             shadow_drive_sdk::StorageAccountVersion::V2,
         )
         .await
